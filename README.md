@@ -1,7 +1,7 @@
 
 # **API de Livros - Node.js, Express, PostgreSQL e Sequelize**
 
-Este projeto implementa uma API para gerenciamento de livros utilizando Node.js e Express, com um banco de dados PostgreSQL e Sequelize como ORM. A autenticação de usuários é feita com JSON Web Token (JWT).
+Este projeto implementa uma API para gerenciamento de livros utilizando Node.js e Express, com um banco de dados PostgreSQL e Sequelize como ORM.
 
 ## **Tecnologias Utilizadas 🛠**
 
@@ -39,8 +39,7 @@ npm install
     DB_USER=<seu-usuario>
     DB_PASSWORD=<sua-senha>
     DB_NAME=<nome-do-banco-de-dados>
-    JWT_SECRET=<chave-secreta-para-jwt>
-    JWT_EXPIRATION=<tempo-de-expiração-do-token>
+
     ```
 
 ### **4. Rodar o Projeto**
