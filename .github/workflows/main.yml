@@ -1,0 +1,29 @@
+name: CI/CD Pipeline Basico
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  integracao_e_testes:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Fazer o checkout do código
+      uses: actions/checkout@v4
+
+    - name: Configurar o Node.js (Versão 20)
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20' 
+
+    - name: Instalar as dependências (npm install)
+      run: npm install
+
+    - name: Executar testes de qualidade
+      run: |
+        echo "Simulando a execução de testes automatizados..."
+        echo "Aqui nós executaríamos o comando 'npm test'!"
+        echo "Se algum teste falhar, o pipeline quebra e o código não vai para produção."
