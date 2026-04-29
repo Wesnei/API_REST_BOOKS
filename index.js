@@ -1,4 +1,6 @@
+import "./instrument.js";
 import express from "express";
+import * as Sentry from "@sentry/node"
 import cors from "cors";
 import dotenv from "dotenv";
 import pool from "./src/config/db.js";
@@ -17,6 +19,13 @@ app.use(cors());
 
 // routes
 app.use('/api', bookRoutes);
+
+app.get("/debug-sentry", (req, res) => {
+  throw new Error("Falha Proativa: Teste de Telemetria IFCE!");
+});
+
+Sentry.setupExpressErrorHandler(app)
+
 
 app.use(errorHandling);
 
