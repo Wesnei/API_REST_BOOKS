@@ -21,14 +21,21 @@ jobs:
         sudo -u postgres psql -c "CREATE DATABASE \"express-crud\";"
 
     # Mapeia as variáveis para o seu .env interno encontrar o banco do GitHub
-    - name: 🔐 Configurar o arquivo .env de teste (Via Super-Secret JSON)
+    - name: 🔐 Configurar o arquivo .env de teste (Sem credenciais expostas)
       run: |
-        echo "DB_HOST=$(echo '${{ secrets.DB_SECRETS }}' | jq -r '.DB_HOST')" >> .env
-        echo "DB_PORT=$(echo '${{ secrets.DB_SECRETS }}' | jq -r '.DB_PORT')" >> .env
-        echo "DB_USER=$(echo '${{ secrets.DB_SECRETS }}' | jq -r '.DB_USER')" >> .env
-        echo "DB_PASSWORD=$(echo '${{ secrets.DB_SECRETS }}' | jq -r '.DB_PASSWORD')" >> .env
-        echo "DB_NAME=$(echo '${{ secrets.DB_SECRETS }}' | jq -r '.DB_NAME')" >> .env
+        echo "DB_HOST=$DB_HOST" >> .env
+        echo "DB_PORT=$DB_PORT" >> .env
+        echo "DB_USER=$DB_USER" >> .env
+        echo "DB_PASSWORD=$DB_PASSWORD" >> .env
+        echo "DB_NAME=$DB_NAME" >> .env
         echo "NODE_ENV=test" >> .env
+      env:
+        # 🌟 O GitHub desestrutura o seu JSON automaticamente aqui!
+        DB_HOST: ${{ fromJson(secrets.DB_SECRETS).DB_HOST }}
+        DB_PORT: ${{ fromJson(secrets.DB_SECRETS).DB_PORT }}
+        DB_USER: ${{ fromJson(secrets.DB_SECRETS).DB_USER }}
+        DB_PASSWORD: ${{ fromJson(secrets.DB_SECRETS).DB_PASSWORD }}
+        DB_NAME: ${{ fromJson(secrets.DB_SECRETS).DB_NAME }}
 
     - name: Configurar o Node.js (Versão 20)
       uses: actions/setup-node@v4
