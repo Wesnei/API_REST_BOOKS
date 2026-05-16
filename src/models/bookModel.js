@@ -12,11 +12,10 @@ export const getBookByIdService = async (id) => {
     return result.rows[0];
 };
 
-// Criar um livro com a URL da imagem
-export const createBookService = async (title, author, price, quantity, genre, description, publishedYear, image) => {
+export const createBookService = async (title, author, price, quantity, genre, description, publishedYear) => {
     const result = await pool.query(
-        "INSERT INTO books (title, author, price, quantity, genre, description, published_year, image) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *",
-        [title, author, price, quantity, genre, description, publishedYear, image]
+        "INSERT INTO books (title, author, price, quantity, genre, description, published_year) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
+        [title, author, price, quantity, genre, description, publishedYear]
     );
     return result.rows[0];
 };

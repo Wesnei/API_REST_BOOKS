@@ -6,9 +6,11 @@ const handleResponse = (res, status, message, data = null) => {
 
 // Criar um novo livro (agora aceitando image_url)
 export const createBook = async (req, res, next) => {
-    const { title, author, price, quantity, genre, description, published_year, image_url } = req.body;
+    // 1. Pega os dados do body (sem imagem)
+    const { title, author, price, quantity, genre, description, published_year } = req.body;
     try {
-        const newBook = await createBookService(title, author, price, quantity, genre, description, published_year, image_url);
+        // 2. Passa exatamente os 7 parâmetros que a sua Service espera, SEM o image_url no final!
+        const newBook = await createBookService(title, author, price, quantity, genre, description, published_year);
         handleResponse(res, 201, "Livro criado com sucesso", newBook);
     } catch (err) {
         next(err);

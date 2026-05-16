@@ -23,9 +23,6 @@ jobs:
       run: npm install
 
     - name: Executar testes de qualidade
-      run: |
-        echo "Simulando a execução de testes automatizados..."
-        echo "Aqui nós executaríamos o comando 'npm test'!"
-        echo "Se algum teste falhar, o pipeline quebra e o código não vai para produção."
+      run: npm test
 
       
