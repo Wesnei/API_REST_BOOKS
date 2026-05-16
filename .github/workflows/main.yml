@@ -10,24 +10,25 @@ jobs:
   integracao_e_testes:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }} 
-          POSTGRES_DB: express-crud
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     steps:
     - name: Fazer o checkout do código
       uses: actions/checkout@v4
+
+    - name: Instalar e configurar o PostgreSQL nativo
+      run: |
+        sudo systemctl start postgresql
+        sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'root';"
+        sudo -u postgres psql -c "CREATE DATABASE \"express-crud\";"
+
+    # Mapeia as variáveis para o seu .env interno encontrar o banco do GitHub
+    - name: Configurar o arquivo .env de teste
+      run: |
+        echo "DB_HOST=localhost" >> .env
+        echo "DB_PORT=5432" >> .env
+        echo "DB_USER=postgres" >> .env
+        echo "DB_PASSWORD=root" >> .env
+        echo "DB_NAME=express-crud" >> .env
+        echo "NODE_ENV=test" >> .env
 
     - name: Configurar o Node.js (Versão 20)
       uses: actions/setup-node@v4
@@ -39,10 +40,3 @@ jobs:
 
     - name: Run tests
       run: npm test
-      env:
-        NODE_ENV: test
-        DB_HOST: localhost
-        DB_PORT: 5432
-        DB_USER: postgres
-        DB_PASSWORD: ${{ secrets.DB_PASSWORD }} 
-        DB_NAME: express-crud
