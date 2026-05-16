@@ -10,6 +10,21 @@ jobs:
   integracao_e_testes:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }} 
+          POSTGRES_DB: express-crud
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
     - name: Fazer o checkout do código
       uses: actions/checkout@v4
@@ -22,7 +37,12 @@ jobs:
     - name: Instalar as dependências (npm install)
       run: npm install
 
-    - name: Executar testes de qualidade
+    - name: Run tests
       run: npm test
-
-      
+      env:
+        NODE_ENV: test
+        DB_HOST: localhost
+        DB_PORT: 5432
+        DB_USER: postgres
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }} 
+        DB_NAME: express-crud
