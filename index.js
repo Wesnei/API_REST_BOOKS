@@ -42,8 +42,10 @@ app.get("/", async (req, res) => {
     }
 });
 
-app.listen(port, () => {
-    console.log(`Bem vindo ao sistema de livraria: http://localhost:${port}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(port, () => {
+        console.log(`Bem vindo ao sistema de livraria: http://localhost:${port}`);
+    });
+}
 
 export default app;

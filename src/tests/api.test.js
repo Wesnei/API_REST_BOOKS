@@ -1,7 +1,12 @@
 import request from 'supertest';
 import app from '../../index.js';
+import createBookTable from '../data/createBookTable.js';
 
 describe('🔥 Testes de Integração - API de Livros', () => {
+
+  beforeAll(async () => {
+    await createBookTable();
+  });
 
   it('Deve retornar status 200 na rota raiz', async () => {
     const res = await request(app).get('/');
