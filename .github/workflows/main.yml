@@ -45,5 +45,5 @@ jobs:
     - name: Instalar as dependências (npm install)
       run: npm install
 
-    - name: Run tests
+    - name: TESTES JEST
       run: npm test

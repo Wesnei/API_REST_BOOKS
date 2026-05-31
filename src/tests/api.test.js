@@ -1,5 +1,5 @@
 import request from 'supertest';
-import app from '../index.js';
+import app from '../../index.js';
 
 describe('🔥 Testes de Integração - API de Livros', () => {
 
@@ -14,11 +14,11 @@ describe('🔥 Testes de Integração - API de Livros', () => {
       .send({
         title: "DevOps no IFCE",
         author: "Wesnei Paiva",
-        price: 49.90,
-        quantity: 12,
+        price: 49.99,
+        quantity: 10,
         genre: "Tecnologia",
-        description: "Aprenda DevOps com o Wesnei Paiva!",
-        published_year: 2026
+        description: "Um guia completo sobre DevOps no IFCE.",
+        published_year: 2024
       });
 
     expect(res.statusCode).toEqual(201);
