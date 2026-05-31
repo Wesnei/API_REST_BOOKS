@@ -132,4 +132,4 @@ Para testar a API, você pode utilizar o [Postman](https://www.postman.com/) ou 
 
 ## **Considerações Finais**
 
-Este projeto foi criado para fornecer uma API simples e eficiente para gerenciamento de livros. Com a configuração do PostgreSQL e Sequelize, você pode facilmente manipular os dados e expandir a API conforme necessário.
+Este projeto foi criado para fornecer uma API eficiente para gerenciamento de livros. Com a configuração do PostgreSQL e Sequelize, você pode facilmente manipular os dados e expandir a API conforme necessário.
