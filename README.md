@@ -1,7 +1,7 @@
 
 # **API de Livros - Node.js, Express, PostgreSQL e Sequelize**
 
-Este projeto foi implementado pensando em criar uma API para gerenciamento de livros utilizando Node.js e Express, com um banco de dados PostgreSQL e Sequelize como ORM.
+Este projeto foi implementado pensando em criar uma API Robusta para gerenciamento de livros utilizando Node.js e Express, com um banco de dados PostgreSQL e Sequelize como ORM.
 
 ## **Tecnologias Utilizadas 🛠**
 
