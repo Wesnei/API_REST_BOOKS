@@ -1,4 +1,4 @@
-name: ChatOps
+name: ChatOps-Wesnei
 
 on:
   issue_comment:
@@ -9,19 +9,43 @@ permissions:
   pull-requests: write
 
 jobs:
-  chatops-comando:
-    if: contains(github.event.comment.body, '/deploy')
+  deploy-controlado:
+    if: >
+      contains(github.event.comment.body, '/deploy') && 
+      github.actor == 'Wesnei'
     runs-on: ubuntu-latest
 
     steps:
-      - name: Bot de Resposta
+      # 1. Feedback inicial: Avisa no PR/Issue que o processo começou
+      - name: Feedback Inicial
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            await github.rest.issues.createComment({
+            github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '🚀 Comando /deploy recebido! Iniciando o processo...'
+              body: '🚀 **Deploy autorizado por @Wesnei.** Iniciando o processo de entrega...'
+            })
+
+      # 2. O seu comando real de deploy vai aqui
+      - name: Executar Deploy
+        run: |
+          echo "Conectando ao servidor e enviando arquivos..."
+          # Exemplo: npm run build ou comando de deploy real
+          # Se der erro aqui, adicione um 'exit 1' para forçar o status vermelho
+          echo "Deploy finalizado com sucesso."
+
+      # 3. Feedback final: Só roda se o passo anterior deu certo
+      - name: Feedback Final
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '✅ **Produção atualizada com sucesso!** \n\n*Status: Online*\n*Executado por: @Wesnei*'
             })
