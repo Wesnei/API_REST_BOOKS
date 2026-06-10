@@ -4,19 +4,26 @@ on:
   issue_comment:
     types: [created]
 
+# A PERMISSÃO PRECISA ESTAR AQUI:
 permissions:
   issues: write
   pull-requests: write
 
 jobs:
   deploy-controlado:
+    # A "Chave Mestra": Somente o Wesnei dispara o deploy
     if: >
       contains(github.event.comment.body, '/deploy') && 
       github.actor == 'Wesnei'
     runs-on: ubuntu-latest
 
+    # Se ainda der erro, garanta que a permissão esteja também aqui dentro do job:
+    permissions:
+      issues: write
+      pull-requests: write
+
     steps:
-      - name: Feedback Inicial
+      - name: Bot de Resposta
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -25,23 +32,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '🚀 **Deploy autorizado por Wesnei.** Iniciando o processo de entrega...'
-            })
-
-      - name: Simulação de Deploy
-        run: |
-          echo "Rodando scripts de deploy..."
-          # Aqui entraria o seu comando real de produção
-          sleep 5
-
-      - name: Feedback Final
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '✅ **Produção atualizada com sucesso!** \n\n*Executado por: @Wesnei*'
+              body: '🚀 Comando /deploy recebido! Iniciando o processo...'
             })
