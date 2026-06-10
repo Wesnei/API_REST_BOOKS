@@ -4,26 +4,21 @@ on:
   issue_comment:
     types: [created]
 
-# A PERMISSÃO PRECISA ESTAR AQUI:
 permissions:
   issues: write
   pull-requests: write
 
 jobs:
   deploy-controlado:
-    # A "Chave Mestra": Somente o Wesnei dispara o deploy
+    # Trava de segurança: só roda se o comentário for /deploy E o usuário for o Wesnei
     if: >
       contains(github.event.comment.body, '/deploy') && 
       github.actor == 'Wesnei'
     runs-on: ubuntu-latest
 
-    # Se ainda der erro, garanta que a permissão esteja também aqui dentro do job:
-    permissions:
-      issues: write
-      pull-requests: write
-
     steps:
-      - name: Bot de Resposta
+      # 1. Feedback inicial: Avisa no PR/Issue que o processo começou
+      - name: Feedback Inicial
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -32,5 +27,27 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '🚀 Comando /deploy recebido! Iniciando o processo...'
+              body: '🚀 **Deploy autorizado por @Wesnei.** Iniciando o processo de entrega...'
+            })
+
+      # 2. O seu comando real de deploy vai aqui
+      # Se qualquer comando aqui falhar (retornar erro), o job ficará VERMELHO automaticamente
+      - name: Executar Deploy
+        run: |
+          echo "Conectando ao servidor e enviando arquivos..."
+          # Exemplo: npm run build ou comando de deploy real
+          # Se der erro aqui, adicione um 'exit 1' para forçar o status vermelho
+          echo "Deploy finalizado com sucesso."
+
+      # 3. Feedback final: Só roda se o passo anterior deu certo
+      - name: Feedback Final
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '✅ **Produção atualizada com sucesso!** \n\n*Status: Online*\n*Executado por: @Wesnei*'
             })
