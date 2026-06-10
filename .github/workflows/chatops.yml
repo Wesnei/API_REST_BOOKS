@@ -1,4 +1,4 @@
-name: ChatOps
+name: ChatOps-Wesnei
 
 on:
   issue_comment:
@@ -9,19 +9,39 @@ permissions:
   pull-requests: write
 
 jobs:
-  chatops-comando:
-    if: contains(github.event.comment.body, '/deploy')
+  deploy-controlado:
+    if: >
+      contains(github.event.comment.body, '/deploy') && 
+      github.actor == 'Wesnei'
     runs-on: ubuntu-latest
 
     steps:
-      - name: Bot de Resposta
+      - name: Feedback Inicial
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            await github.rest.issues.createComment({
+            github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '🚀 Comando /deploy recebido! Iniciando o processo...'
+              body: '🚀 **Deploy autorizado por Wesnei.** Iniciando o processo de entrega...'
+            })
+
+      - name: Simulação de Deploy
+        run: |
+          echo "Rodando scripts de deploy..."
+          # Aqui entraria o seu comando real de produção
+          sleep 5
+
+      - name: Feedback Final
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '✅ **Produção atualizada com sucesso!** \n\n*Executado por: @Wesnei*'
             })
