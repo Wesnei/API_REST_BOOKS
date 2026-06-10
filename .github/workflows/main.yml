@@ -1,25 +1,52 @@
-name: ChatOps
+name: CI/CD Pipeline Basico
 
 on:
-  issue_comment:
-    types: [created]
+  push:
+    branches:
+      - main
+      - master
 
-permissions:
-  issues: write
+  pull_request:
+    branches:
+      - main
+      - master
 
 jobs:
-  chatops-comando:
-    if: contains(github.event.comment.body, '/deploy')
+  integracao_e_testes:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Bot de Resposta
-        uses: actions/github-script@v6
+      - name: Fazer o checkout do código
+        uses: actions/checkout@v4
+
+      - name: Instalar e configurar o PostgreSQL nativo
+        run: |
+          sudo systemctl start postgresql
+          sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'root';"
+          sudo -u postgres psql -c "CREATE DATABASE \"express-crud\";"
+
+      - name: 🔐 Configurar o arquivo .env de teste
+        run: |
+          echo "DB_HOST=$DB_HOST" >> .env
+          echo "DB_PORT=$DB_PORT" >> .env
+          echo "DB_USER=$DB_USER" >> .env
+          echo "DB_PASSWORD=$DB_PASSWORD" >> .env
+          echo "DB_NAME=$DB_NAME" >> .env
+          echo "NODE_ENV=test" >> .env
+        env:
+          DB_HOST: ${{ fromJson(secrets.DB_SECRETS).DB_HOST }}
+          DB_PORT: ${{ fromJson(secrets.DB_SECRETS).DB_PORT }}
+          DB_USER: ${{ fromJson(secrets.DB_SECRETS).DB_USER }}
+          DB_PASSWORD: ${{ fromJson(secrets.DB_SECRETS).DB_PASSWORD }}
+          DB_NAME: ${{ fromJson(secrets.DB_SECRETS).DB_NAME }}
+
+      - name: Configurar o Node.js (Versão 20)
+        uses: actions/setup-node@v4
         with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '🚀 Comando /deploy recebido! Iniciando o processo...'
-            })
+          node-version: "20"
+
+      - name: Instalar as dependências (npm install)
+        run: npm install
+
+      - name: Executar testes Jest
+        run: npm test
