@@ -50,5 +50,4 @@ jobs:
               repo: context.repo.repo,
               body: '✅ **Produção atualizada com sucesso!** \n\n*Status: Online*\n*Executado por: @Wesnei*'
             })
- 
-            
+
