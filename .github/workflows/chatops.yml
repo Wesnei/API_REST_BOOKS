@@ -1,18 +1,25 @@
 name: ChatOps
+
 on:
   issue_comment:
     types: [created]
+
+permissions:
+  issues: write
+  pull-requests: write
 
 jobs:
   chatops-comando:
     if: contains(github.event.comment.body, '/deploy')
     runs-on: ubuntu-latest
+
     steps:
       - name: Bot de Resposta
         uses: actions/github-script@v6
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            github.rest.issues.createComment({
+            await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
